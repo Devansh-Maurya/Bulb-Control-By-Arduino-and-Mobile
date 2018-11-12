@@ -12,7 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -22,6 +24,7 @@ public class LEDControlActivity extends AppCompatActivity {
 
     private Button buttonOn, buttonOff, buttonDisconnect;
     private SeekBar brightnessBar;
+    private EditText textCommand;
     private String address;
     private ProgressDialog progress;
     private BluetoothAdapter bluetoothAdapter;
@@ -37,8 +40,8 @@ public class LEDControlActivity extends AppCompatActivity {
         Intent receivedIntent = getIntent();
         address = receivedIntent.getStringExtra(MainActivity.EXTRA_ADDRESS);
 
+        textCommand = findViewById(R.id.command_edit_text);
         buttonOn = findViewById(R.id.button_on);
-        buttonOff = findViewById(R.id.button_off);
         buttonDisconnect = findViewById(R.id.button_disconnect);
         brightnessBar = findViewById(R.id.brightness_bar);
 
@@ -49,21 +52,10 @@ public class LEDControlActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (bluetoothSocket != null) {
                     try {
-                        bluetoothSocket.getOutputStream().write("1".toString().getBytes());
-                        Toast.makeText(getApplicationContext(), "Sent: " + ((byte) 1), Toast.LENGTH_LONG).show();
-                    } catch (IOException e) {
-                        showToast("Error!!!");
-                    }
-                }
-            }
-        });
-
-        buttonOff.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (bluetoothSocket != null) {
-                    try {
-                        bluetoothSocket.getOutputStream().write("0".toString().getBytes());
+                        byte[] commandBytes = textCommand.getText().toString().getBytes();
+                        bluetoothSocket.getOutputStream().write(commandBytes);
+                        Toast.makeText(getApplicationContext(), "Sent: " + textCommand.getText().toString(),
+                                Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {
                         showToast("Error!!!");
                     }
@@ -85,34 +77,10 @@ public class LEDControlActivity extends AppCompatActivity {
                 finish();   //Return to the previous activity
             }
         });
-
-        brightnessBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    try {
-                        if (bluetoothSocket != null)
-                            bluetoothSocket.getOutputStream().write(String.valueOf(progress).getBytes());
-                    } catch (IOException e) {
-                        showToast("Error!!!");
-                    }
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
     }
 
     private void showToast(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private class ConnectBluetooth extends AsyncTask<Void, Void, Void> {

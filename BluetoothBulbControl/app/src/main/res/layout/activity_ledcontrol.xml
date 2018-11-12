@@ -5,34 +5,19 @@
     android:layout_width="match_parent"
     android:orientation="vertical">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="On"
-        android:layout_margin="30dp"
-        android:id="@+id/button_on"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Off"
-        android:layout_margin="30dp"
-        android:id="@+id/button_off"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Brightness"
-        android:padding="16dp" />
-
-    <SeekBar
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:id="@+id/brightness_bar"/>
+        android:hint="Enter the data to send..."
+        android:id="@+id/command_edit_text"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Send"
+        android:layout_margin="30dp"
+        android:id="@+id/button_on"/>
 
     <Button
         android:layout_width="wrap_content"
