@@ -42,14 +42,15 @@ public class LEDControlActivity extends AppCompatActivity {
         buttonDisconnect = findViewById(R.id.button_disconnect);
         brightnessBar = findViewById(R.id.brightness_bar);
 
-        ConnectBluetooth connectBluetooth = new ConnectBluetooth();
+        new ConnectBluetooth().execute();
 
         buttonOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (bluetoothSocket != null) {
                     try {
-                        bluetoothSocket.getOutputStream().write((byte) 1);
+                        bluetoothSocket.getOutputStream().write("1".toString().getBytes());
+                        Toast.makeText(getApplicationContext(), "Sent: " + ((byte) 1), Toast.LENGTH_LONG).show();
                     } catch (IOException e) {
                         showToast("Error!!!");
                     }
