@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -14,43 +15,34 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-    BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    public static final int REQUEST_ENABLE_BT = 4;
-    ArrayList<String> pairedDevicesName = new ArrayList<>();
+    private Button buttonPaired;
+    private ListView pairedDevicesList;
+    private BluetoothAdapter bluetoothAdapter;
+    private Set<BluetoothDevice> pairedDevices;
+
+    public static final int BT_ENABLE_REQUEST = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (!bluetoothAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-        }
+        buttonPaired = findViewById(R.id.button_paired_devices);
+        pairedDevicesList = findViewById(R.id.paired_devices_list);
 
-        if (bluetoothAdapter.isEnabled()) {
-            Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-            if (pairedDevices.size() > 0) {
-                //There are paired devices, get the name of each
-                for (BluetoothDevice device : pairedDevices) {
-                    pairedDevicesName.add(device.getName());
-                }
+        if (bluetoothAdapter == null) {
+            Toast.makeText(this, "Bluetooth device not available", Toast.LENGTH_LONG).show();
+            //Finish the app
+            finish();
+        } else {
+            if (!bluetoothAdapter.isEnabled()) {
+                //Ask user to turn bluetooth on
+               Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+               startActivityForResult(enableBTIntent, BT_ENABLE_REQUEST);
             }
         }
-
-        ArrayAdapter<String> pairedDevicesAdapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, pairedDevicesName);
-        ListView listView = findViewById(R.id.paired_devices_list);
-        listView.setAdapter(pairedDevicesAdapter);
-
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            Toast.makeText(this, "Bluetooth enabled", Toast.LENGTH_SHORT).show();
-        } else if (resultCode == RESULT_CANCELED)
-            Toast.makeText(this, "Bluetooth was not enabled", Toast.LENGTH_SHORT).show();
-    }
 }
