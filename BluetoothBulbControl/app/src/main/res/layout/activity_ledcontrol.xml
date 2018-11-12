@@ -19,6 +19,52 @@
         android:layout_margin="30dp"
         android:id="@+id/button_on"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Start Delay: "
+            android:layout_weight="2"
+            android:layout_gravity="center_vertical"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Enter seconds..."
+            android:layout_gravity="right"
+            android:inputType="phone"
+            android:layout_weight="3"
+            android:id="@+id/start_delay"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Stop After: "
+            android:layout_weight="2"
+            android:layout_gravity="center_vertical"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Enter seconds..."
+            android:layout_gravity="right"
+            android:inputType="phone"
+            android:layout_weight="3"
+            android:id="@+id/stop_after"/>
+
+    </LinearLayout>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

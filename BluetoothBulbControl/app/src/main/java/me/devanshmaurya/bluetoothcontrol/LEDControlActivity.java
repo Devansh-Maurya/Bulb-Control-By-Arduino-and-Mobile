@@ -22,9 +22,8 @@ import java.util.UUID;
 
 public class LEDControlActivity extends AppCompatActivity {
 
-    private Button buttonOn, buttonOff, buttonDisconnect;
-    private SeekBar brightnessBar;
-    private EditText textCommand;
+    private Button buttonOn, buttonDisconnect;
+    private EditText textCommand, startDelayET, stopAfterET;
     private String address;
     private ProgressDialog progress;
     private BluetoothAdapter bluetoothAdapter;
@@ -43,7 +42,8 @@ public class LEDControlActivity extends AppCompatActivity {
         textCommand = findViewById(R.id.command_edit_text);
         buttonOn = findViewById(R.id.button_on);
         buttonDisconnect = findViewById(R.id.button_disconnect);
-        brightnessBar = findViewById(R.id.brightness_bar);
+        startDelayET = findViewById(R.id.start_delay);
+        stopAfterET = findViewById(R.id.stop_after);
 
         new ConnectBluetooth().execute();
 
@@ -52,10 +52,18 @@ public class LEDControlActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (bluetoothSocket != null) {
                     try {
-                        byte[] commandBytes = textCommand.getText().toString().getBytes();
+                        String command = textCommand.getText().toString();
+                        byte[] commandBytes = command.getBytes();
+                        String startDelay = startDelayET.getText().toString();
+                        String stopAfter = stopAfterET.getText().toString();
+
+                        if (!startDelay.equals("") && !stopAfter.equals("")) {
+                            command = "b" + startDelay + "000" + "e" + stopAfter + "000" + command;
+                            commandBytes = command.getBytes();
+                        }
+
                         bluetoothSocket.getOutputStream().write(commandBytes);
-                        Toast.makeText(getApplicationContext(), "Sent: " + textCommand.getText().toString(),
-                                Toast.LENGTH_SHORT).show();
+                        showToast("Sent: " + command);
                     } catch (IOException e) {
                         showToast("Error!!!");
                     }
