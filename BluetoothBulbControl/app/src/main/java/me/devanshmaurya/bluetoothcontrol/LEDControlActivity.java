@@ -9,20 +9,20 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.UUID;
 
 public class LEDControlActivity extends AppCompatActivity {
 
     private Button buttonOn, buttonDisconnect;
+    private CheckBox bulb1Checkbox, bulb2Checkbox;
     private EditText textCommand, startDelayET, stopAfterET;
     private String address;
     private ProgressDialog progress;
@@ -42,6 +42,8 @@ public class LEDControlActivity extends AppCompatActivity {
         textCommand = findViewById(R.id.command_edit_text);
         buttonOn = findViewById(R.id.button_on);
         buttonDisconnect = findViewById(R.id.button_disconnect);
+        bulb1Checkbox = findViewById(R.id.bulb1_checkbox);
+        bulb2Checkbox = findViewById(R.id.bulb2_checkbox);
         startDelayET = findViewById(R.id.start_delay);
         stopAfterET = findViewById(R.id.stop_after);
 
@@ -87,9 +89,43 @@ public class LEDControlActivity extends AppCompatActivity {
         });
     }
 
+    public void onBulbCheckBoxClicked(View view) throws IOException{
+        boolean checked = ((CheckBox) view).isChecked();
+
+        OutputStream bluetoothOS = bluetoothSocket.getOutputStream();
+
+        switch (view.getId()) {
+            case R.id.bulb1_checkbox:
+                if (checked) {
+                    //If box is checked, make pin 1 of Arduino as output for bulb 1
+                    bluetoothOS.write("1".getBytes());
+                    showToast("Bulb 1 is now functional");
+                } else {
+                    //If box is unchecked, make pin 0 as output, as nothing is connected there,
+                    //bulb won't glow
+                    bluetoothOS.write("0".getBytes());
+                    showToast("Bulb 1 is not functional");
+                }
+                break;
+            case R.id.bulb2_checkbox:
+                if (checked) {
+                    //If box is checked, make pin 2 of Arduino as output for bulb 2
+                    bluetoothOS.write("2".getBytes());
+                    showToast("Bulb 2 is now functional");
+                } else {
+                    //If box is unchecked, make pin 0 as output, as nothing is connected there,
+                    //bulb won't glow
+                    bluetoothOS.write("0".getBytes());
+                    showToast("Bulb 1 is not functional");
+                }
+        }
+    }
+
+
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
+
 
     private class ConnectBluetooth extends AsyncTask<Void, Void, Void> {
 
