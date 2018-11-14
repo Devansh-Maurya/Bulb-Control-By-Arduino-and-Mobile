@@ -1,10 +1,3 @@
-/*
-* Bluetooh Basic: LED ON OFF - Avishkar
-* Coder - Mayoogh Girish
-* Website - http://bit.do/Avishkar
-* Download the App : https://github.com/Mayoogh/Arduino-Bluetooth-Basic
-* This program lets you to control a LED on pin 13 of arduino using a bluetooth module
-*/
 #include<SoftwareSerial.h>
 #define PIN A5
 SoftwareSerial BT(10,11);
@@ -28,11 +21,29 @@ void loop()
       data = BT.read();
       readdata+=data;
    }
+
+   int bulb_1, bulb_2;
    //Read the incoming data & store into data
    if(readdata.length()>0)
    {
       Serial.print(readdata);          //Print Value inside data in Serial monitor
-      Serial.print("\n");        
+      Serial.print("\n");   
+
+      if(readdata == "1") {
+        bulb_1 = readdata.toInt();
+        bulb_2 = 0;
+      }
+
+      if(readdata == "2") {
+        bulb_1 = 0;
+        bulb_2 = readdata.toInt();
+      }
+
+      if(readdata == "12") {
+        bulb_1 = 1;
+        bulb_2 = 2;
+      }
+           
       if(readdata == "ON") {             // Checks whether value of data is equal to 1
          analogWrite(PIN, 255);
          readdata = "";
