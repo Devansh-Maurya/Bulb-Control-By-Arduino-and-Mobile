@@ -7,12 +7,14 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -21,8 +23,9 @@ import java.util.UUID;
 
 public class LEDControlActivity extends AppCompatActivity {
 
-    private Button buttonOn, buttonDisconnect;
+    private Button buttonDisconnect;
     private CheckBox bulb1Checkbox, bulb2Checkbox;
+    private ImageView buttonOn;
     private EditText textCommand, startDelayET, stopAfterET;
     private String address;
     private ProgressDialog progress;
@@ -31,6 +34,8 @@ public class LEDControlActivity extends AppCompatActivity {
     private boolean isBTConnected = false;
     //Default Universally Unique Identifier, HC-05's default
     static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private boolean on = false;
+    private Toast previousToast;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,7 +44,6 @@ public class LEDControlActivity extends AppCompatActivity {
         Intent receivedIntent = getIntent();
         address = receivedIntent.getStringExtra(MainActivity.EXTRA_ADDRESS);
 
-        textCommand = findViewById(R.id.command_edit_text);
         buttonOn = findViewById(R.id.button_on);
         buttonDisconnect = findViewById(R.id.button_disconnect);
         bulb1Checkbox = findViewById(R.id.bulb1_checkbox);
@@ -54,13 +58,25 @@ public class LEDControlActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (bluetoothSocket != null) {
                     try {
-                        String command = textCommand.getText().toString();
+                        String command;
+                        //Set on only if one of the bulb has been checked
+                        if (!on ) {
+                            command = "ON";
+                            //Keeping it here is required, don't keep it out for proper functioning of app
+                            if (bulb1Checkbox.isChecked() || bulb2Checkbox.isChecked())
+                                buttonOn.setImageResource(R.drawable.bulb_on);
+                            on = true;
+                        } else {
+                            command = "OFF";
+                            buttonOn.setImageResource(R.drawable.bulb_off);
+                            on = false;
+                        }
                         byte[] commandBytes = command.getBytes();
-                        String startDelay = startDelayET.getText().toString();
+                        final String startDelay = startDelayET.getText().toString();
                         String stopAfter = stopAfterET.getText().toString();
 
-                        if (!startDelay.equals("") && !stopAfter.equals("")) {
-                            command = "b" + startDelay + "000" + "e" + stopAfter + "000" + command;
+                        if (!startDelay.equals("") && !stopAfter.equals("") && on) {
+                            command = "b" + startDelay + "000" + "e" + stopAfter + "000";
                             commandBytes = command.getBytes();
                         }
 
@@ -79,6 +95,8 @@ public class LEDControlActivity extends AppCompatActivity {
                 //If the bluetooth socket is busy
                 if (bluetoothSocket != null) {
                     try {
+                        //To prevent functioning of bulb on next start of app
+                        bluetoothSocket.getOutputStream().write("STOP".getBytes());
                         bluetoothSocket.close(); //Close connection
                     } catch (IOException e) {
                         showToast("Error!!!");
@@ -103,7 +121,7 @@ public class LEDControlActivity extends AppCompatActivity {
                 } else {
                     //If box is unchecked, make pin 0 as output, as nothing is connected there,
                     //bulb won't glow
-                    bluetoothOS.write("0".getBytes());
+                    bluetoothOS.write("01".getBytes());
                     showToast("Bulb 1 is not functional");
                 }
                 break;
@@ -115,7 +133,7 @@ public class LEDControlActivity extends AppCompatActivity {
                 } else {
                     //If box is unchecked, make pin 0 as output, as nothing is connected there,
                     //bulb won't glow
-                    bluetoothOS.write("0".getBytes());
+                    bluetoothOS.write("02".getBytes());
                     showToast("Bulb 1 is not functional");
                 }
         }
@@ -123,7 +141,12 @@ public class LEDControlActivity extends AppCompatActivity {
 
 
     private void showToast(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
+        //Hide the previous toast
+        if (previousToast != null)
+            previousToast.cancel();
+        previousToast = toast;
     }
 
 
