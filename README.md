@@ -1,6 +1,7 @@
 # Bulb-Control-By-Arduino-and-Mobile
 
 ## [Download the app](https://github.com/Devansh-Maurya/Bulb-Control-By-Arduino-and-Mobile/raw/master/Bluetooth%20Bulb%20Control.apk)
+## [Arduino Code](/bluetooth/bluetooth.ino)
 
 ### Implementing a system where we can automatically switch on or off any two appliances through a mobile device using necessary micro controller and sensors.
 
