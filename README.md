@@ -22,14 +22,18 @@ It can be powered by a USB cable or by an external 9 volt battery, though it acc
 HC‐05 module is an easy to use Bluetooth SPP (Serial Port Protocol) module, designed for transparent wireless serial connection setup. The HC-05 Bluetooth Module can be used in a Master or Slave configuration, making it a great solution for wireless communication. This serial port Bluetooth module is fully qualified Bluetooth V2.0+EDR (Enhanced Data
 Rate)3Mbps Modulation with complete 2.4GHz radio transceiver and baseband. It uses CSR Bluecore 04‐External single chip Bluetooth system with CMOS technology and with AFH (Adaptive Frequency Hopping Feature).
 
-![Bluetooth Module](/bluetooth.png "Bluetooth Module")
+<p align="center">
+  <img src="/bluetooth.png">
+</p>
 
 The HC-05 has two operating modes, one is the Data mode in which it can send and receive data from other Bluetooth devices and the other is the AT Command mode where the default device settings can be changed. We can operate the device in either of these two modes by using the key pin as explained in the pin description.
 
 ### RELAY
 The Arduino Relay module allows a wide range of microcontroller such as Arduino, AVR, PIC, ARM with digital outputs to control larger loads and devices like AC or DC Motors, electromagnets, solenoids, and incandescent light bulbs. This module is designed to be integrated with 2 relays that it is capable of control 2 relays.The relay shield use one QIANJI JQC-3F high-quality relay with rated load 7A/240VAC,10A/125VAC,10A/28VDC.The relay output state is individually indicated by a light-emitting diode.
 
-![Relay module](/relay.png "Relay module")
+<p align="center">
+  <img src="/relay.png">
+</p>
 
 The relay has two outputs-normally open and normally closed (NO and NC). When the IN1 or IN2 pin is connected to ground, NO will be open and NC will be closed, and when IN1 or IN2 is not connected to ground the opposite occurs. Connecting a circuit or device between one of these two pins, the common pin on the relay output, and a power source will allow you to toggle power to a circuit or device.
 
